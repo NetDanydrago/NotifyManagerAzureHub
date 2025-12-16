@@ -1,0 +1,19 @@
+@Api_HostAddress = http://localhost:5121
+
+GET {{Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+
+### Send Notification - Minimal Example
+POST {{Api_HostAddress}}/api/notifications/send
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "Simple Notification",
+  "body": "This is a simple notification with minimal data",
+  "tags" : ["user-11"]
+}
+

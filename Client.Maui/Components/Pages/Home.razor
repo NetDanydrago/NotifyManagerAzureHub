@@ -1,0 +1,88 @@
+﻿@page "/"
+@using Client.Maui.HubService.Interfaces
+
+<h3>🔔 Push Notifications Demo</h3>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+
+            <!-- Step 2: Subscribe -->
+            <div class="card mb-3">
+                <div class="card-header"><strong>Step 2: Subscribe to Notifications</strong></div>
+                <div class="card-body">
+                    <button class="btn btn-success" @onclick="OnRegisterButtonClicked">
+                    "Subscribe"
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+@code
+{
+    [Inject]
+    private INotificationRegistrationService _notificationRegistrationService { get; set; }
+
+    private string PermissionStatus = "default";
+    private bool IsSubscribed = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var notificationPermission = Permissions.RequestAsync<Permissions.PostNotifications>();
+        var status = await notificationPermission;
+        PermissionStatus = status.ToString() == "granted" ? "granted" : "denied";
+    }
+    
+    
+
+    async Task OnRegisterButtonClicked()
+    {
+        try
+        {
+            await _notificationRegistrationService.RegisterDeviceAsync();
+            ShowAlert("Device registered");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+
+        }
+        
+
+    }
+
+    async Task OnDeregisterButtonClicked()
+    {
+        try
+        {
+            await _notificationRegistrationService.DeregisterDeviceAsync();
+            ShowAlert("Device deregistered");
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    async Task ShowAlert(string message)
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            Application.Current.MainPage.DisplayAlert("Push notifications demo", message, "OK")
+                .ContinueWith((task) =>
+                {
+                    if (task.IsFaulted)
+                        throw task.Exception;
+                });
+        });
+    }
+
+    
+}

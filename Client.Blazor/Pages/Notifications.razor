@@ -1,0 +1,53 @@
+@page "/notifications"
+
+<h3>🔔 Push Notifications Demo</h3>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            
+            <!-- Status -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="mb-2">
+                        <strong>Permission:</strong> 
+                        <span class="badge @GetPermissionBadge()">@PermissionStatus</span>
+                    </p>
+                    <p class="mb-0">
+                        <strong>Subscribed:</strong> 
+                        <span class="badge @(IsSubscribed ? "bg-success" : "bg-secondary")">@(IsSubscribed ? "Yes" : "No")</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 1: Request Permission -->
+            <div class="card mb-3">
+                <div class="card-header"><strong>Step 1: Request Permission</strong></div>
+                <div class="card-body">
+                    <button class="btn btn-primary" @onclick="RequestPermission" 
+                            disabled="@(PermissionStatus == "granted")">
+                        @(PermissionStatus == "granted" ? "✓ Permission Granted" : "Request Permission")
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Subscribe -->
+            <div class="card mb-3">
+                <div class="card-header"><strong>Step 2: Subscribe to Notifications</strong></div>
+                <div class="card-body">
+                    <button class="btn btn-success" @onclick="Subscribe" 
+                            disabled="@(PermissionStatus != "granted" || IsSubscribed)">
+                        @(IsSubscribed ? "✓ Subscribed" : "Subscribe")
+                    </button>
+                    
+                    @if (!string.IsNullOrEmpty(InstallationId) && IsSubscribed)
+                    {
+                        <p class="mt-3 mb-0"><small><strong>User ID:</strong> @InstallationId</small></p>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

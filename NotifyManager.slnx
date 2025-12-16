@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/Feature/">
+    <Project Path="NotifyManager.Rest.Mappings/NotifyManager.Rest.Mappings.csproj" Id="3f31e6aa-1b6e-4e11-816c-0f4af3839a9f" />
+    <Project Path="NotifyManager/NotifyManager.csproj" />
+  </Folder>
+  <Project Path="Api/Api.csproj" Id="80482bc8-aee1-4b36-80e0-9d1a6a31f147" />
+  <Project Path="Client.Maui/Client.Maui.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+</Solution>
