@@ -1,28 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NotifyManager.Extensions;
+﻿namespace NotifyManager.Extensions;
 
 public static class SubscriptionExtensions
 {
-    public static object ExtractPushChannel(this SubscriptionDto subscription)
+    public static object ExtractPushChannel(this SubscriptionDto subscription) => subscription.Platform switch
     {
-        return new
+        "fcmv1" => new { subscription.NotificationHandle },
+        "browser" => new
         {
-            endpoint = subscription.WebPushSubscription.GetRequiredValue("endpoint"),
-            p256dh = subscription.WebPushSubscription.GetRequiredValue("p256dh"),
-            auth = subscription.WebPushSubscription.GetRequiredValue("auth")
-        };
-    }
+            Endpoint = subscription.WebPushSubscription.GetRequiredValue("endpoint"),
+            P256DH = subscription.WebPushSubscription.GetRequiredValue("p256dh"),
+            Auth = subscription.WebPushSubscription.GetRequiredValue("auth")
+        },
+        _ => throw new NotSupportedException($"Platform '{subscription.Platform}' is not supported")
+    };
 
-    public static BodyPayload CreateBodyPayload(this SubscriptionDto subscription)
+    public static object CreateBodyPayload(this SubscriptionDto subscription) => subscription.Platform switch
     {
-        return new BodyPayload
+        "fcmv1" => new { message = new { notification = new { title = "$(title)", body = "$(body)" }, data = subscription.PayLoad } },
+        "browser" => new
         {
-            Title = "$(title)",
-            Message = "$(body)",
-            Data = subscription.PayLoad
-        };
-    }
+            title = "$(title)",
+            message  = "$(body)",
+            data = subscription.PayLoad
+        },
+        _ => throw new NotSupportedException($"Platform '{subscription.Platform}' is not supported")
+    };
+
 }

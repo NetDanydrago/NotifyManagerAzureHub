@@ -14,6 +14,6 @@ Accept: application/json
 {
   "title": "Simple Notification",
   "body": "This is a simple notification with minimal data",
-  "tags" : ["user-11"]
+  "tags" : ["user:1"]
 }
 

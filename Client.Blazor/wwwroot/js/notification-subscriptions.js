@@ -33,22 +33,21 @@ export class NotificationSubscriptionManager {
     async getSubscription(vapidPublicKey) {
         const registration = await navigator.serviceWorker.ready;
         
-        const permission = Notification.permission;
-        if (permission !== 'granted') {
-            throw new Error('Notification permission not granted');
-        }
-
-        // Obtener suscripción existente o crear nueva
-        this.subscription = await registration.pushManager.getSubscription();
+        // Obtener suscripción existente
+        let existingSubscription = await registration.pushManager.getSubscription();
         
-        if (!this.subscription) {
-            this.subscription = await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
-            });
+        // Si existe una suscripción previa, desuscribirse
+        if (existingSubscription) {
+            await existingSubscription.unsubscribe();
         }
 
-        // Retornar datos para Azure
+        // Crear nueva suscripción
+        this.subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+        });
+
+        // Retornar datos en formato correcto para Azure
         return {
             endpoint: this.subscription.endpoint,
             p256dh: arrayBufferToBase64(this.subscription.getKey('p256dh')),

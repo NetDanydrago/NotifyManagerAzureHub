@@ -79,7 +79,10 @@ public partial class Notifications(IJSRuntime jsRuntime, HttpClient client, IOpt
                     Endpoint = subscription.GetProperty("endpoint").GetString(),
                     P256dh = subscription.GetProperty("p256dh").GetString(),
                     Auth = subscription.GetProperty("auth").GetString()
-                }
+                },
+                Payload = new Dictionary<string, string>() {
+                { "url", "$(url)" },
+                { "user", "$(userid)" },}
             };
 
             // Enviar a la API

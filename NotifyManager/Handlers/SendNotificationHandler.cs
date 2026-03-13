@@ -10,7 +10,7 @@ public class SendNotificationHandler(IHttpClientFactory httpClientFactory, IOpti
 
             // Build the resource URI and path
             string resourceUri = $"https://{hubConfig.NamespaceName}.servicebus.windows.net/{azureOptions.Value.HubName}";
-            string path = $"/messages/?api-version=2015-01";
+            string path = $"/messages/?api-version=2020-06";
 
             // Prepare notification payload with title, body and data
             var notificationPayload = new Dictionary<string, string>
@@ -34,7 +34,7 @@ public class SendNotificationHandler(IHttpClientFactory httpClientFactory, IOpti
 
             // Create HTTP client with necessary headers
             HttpClient client = httpClientFactory.CreateClient();
-            client.DefaultRequestHeaders.Add("x-ms-version", "2015-01");
+            client.DefaultRequestHeaders.Add("x-ms-version", "2020-06");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("SharedAccessSignature", sasToken.Replace("SharedAccessSignature ", ""));
 
             // Add ServiceBusNotification-Tags header if tags are provided
