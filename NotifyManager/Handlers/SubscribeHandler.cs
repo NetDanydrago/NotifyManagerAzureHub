@@ -36,14 +36,6 @@ public class SubscribeHandler(IOptions<AzureNotificationHubOptions> azureOptions
         client.DefaultRequestHeaders.Add("x-ms-version", "2020-06");
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("SharedAccessSignature", sasToken.Replace("SharedAccessSignature ", ""));
 
-        string deleteuri = $"{resourceUri}/installations/{subscription.InstallationId}?api-version=2020-06";
-        var responsdelete = await client.DeleteAsync(deleteuri);
-        var cpmtemtdelete = await responsdelete.Content.ReadAsStringAsync();
-
-        string getUri = $"{resourceUri}/installations/{subscription.InstallationId}?api-version=2020-06";
-        var responseget = await client.GetAsync(getUri);
-        var cpmtemtd = await responseget.Content.ReadAsStringAsync();
-
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         var response = await client.PutAsync($"{resourceUri}{path}?api-version=2020-06", content);
         if (!response.IsSuccessStatusCode)
